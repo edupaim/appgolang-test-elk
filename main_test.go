@@ -20,10 +20,4 @@ func TestApplication(t *testing.T) {
 	bodyResponse, err := ioutil.ReadAll(resp.Body)
 	gomega.Expect(err).ShouldNot(gomega.HaveOccurred())
 	fmt.Println(string(bodyResponse))
-	resp, err = http.Get("http://localhost:8080/ping")
-	gomega.Expect(err).ShouldNot(gomega.HaveOccurred())
-	bodyResponse, err = ioutil.ReadAll(resp.Body)
-	gomega.Expect(err).ShouldNot(gomega.HaveOccurred())
-	fmt.Println(string(bodyResponse))
-	time.Sleep(50 * time.Millisecond)
 }
