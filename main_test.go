@@ -3,10 +3,10 @@ package main
 import (
 	"testing"
 	"github.com/onsi/gomega"
-	"net/http"
-	"fmt"
-	"io/ioutil"
 	"time"
+	"net/http"
+	"io/ioutil"
+	"fmt"
 )
 
 func TestApplication(t *testing.T) {
