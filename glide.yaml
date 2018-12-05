@@ -2,3 +2,4 @@ package: github.com/edupaim/elk-beat
 import:
   - package: github.com/gin-gonic/gin
   - package: github.com/sirupsen/logrus
+  - package: github.com/onsi/gomega
