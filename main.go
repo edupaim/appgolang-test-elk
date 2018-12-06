@@ -7,24 +7,43 @@ import (
 	"path"
 	"net/http"
 	"time"
-)
+	"bytes"
+	)
 
-func Logger() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		logrus.WithFields(logrus.Fields{
-			"httpMethod":   c.Request.Method,
-			"absolutePath": c.Request.URL.Path,
-			"handlerName":  c.HandlerName(),
-		}).Infoln("received http request")
+type BodyLogWriter struct {
+	gin.ResponseWriter
+	body *bytes.Buffer
+}
+
+func NewBodyLogWriter(responseWriter gin.ResponseWriter) *BodyLogWriter {
+	return &BodyLogWriter{
+		body:           bytes.NewBufferString(""),
+		ResponseWriter: responseWriter,
+	}
+}
+
+func (w BodyLogWriter) Write(b []byte) (int, error) {
+	n, err := w.body.Write(b)
+	if err != nil {
+		return n, err
+	}
+	return w.ResponseWriter.Write(b)
+}
+
+func Logger(c *gin.Context) {
+		//blw := NewBodyLogWriter(c.Writer)
+		//c.Writer = blw
 		t := time.Now()
 		c.Next()
 		latency := time.Since(t)
-		status := c.Writer.Status()
+		latencyMsec := latency.Seconds() * float64(time.Second/time.Millisecond)
 		logrus.WithFields(logrus.Fields{
-			"status":  status,
-			"latency": latency,
-		}).Infoln("response http request")
-	}
+			"status":       c.Writer.Status(),
+			"latency":      latencyMsec,
+			"httpMethod":   c.Request.Method,
+			"absolutePath": c.Request.URL.Path,
+			//"responseBody": blw.body.String(),
+		}).Infoln("http request")
 }
 
 func RunApplication() error {
@@ -39,7 +58,7 @@ func RunApplication() error {
 	}
 	logrus.SetOutput(file)
 	router := gin.Default()
-	router.Use(Logger())
+	router.Use(Logger)
 	router.GET("/ok", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})

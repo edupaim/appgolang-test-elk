@@ -15,7 +15,7 @@ func TestApplication(t *testing.T) {
 		RunApplication()
 	}()
 	time.Sleep(50 * time.Millisecond)
-	resp, err := http.Get("http://localhost:8080/ok")
+	resp, err := http.Get("http://localhost:8080/nok")
 	gomega.Expect(err).ShouldNot(gomega.HaveOccurred())
 	bodyResponse, err := ioutil.ReadAll(resp.Body)
 	gomega.Expect(err).ShouldNot(gomega.HaveOccurred())
