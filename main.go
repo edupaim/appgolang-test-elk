@@ -7,32 +7,9 @@ import (
 	"path"
 	"net/http"
 	"time"
-	"bytes"
 	)
 
-type BodyLogWriter struct {
-	gin.ResponseWriter
-	body *bytes.Buffer
-}
-
-func NewBodyLogWriter(responseWriter gin.ResponseWriter) *BodyLogWriter {
-	return &BodyLogWriter{
-		body:           bytes.NewBufferString(""),
-		ResponseWriter: responseWriter,
-	}
-}
-
-func (w BodyLogWriter) Write(b []byte) (int, error) {
-	n, err := w.body.Write(b)
-	if err != nil {
-		return n, err
-	}
-	return w.ResponseWriter.Write(b)
-}
-
 func Logger(c *gin.Context) {
-		//blw := NewBodyLogWriter(c.Writer)
-		//c.Writer = blw
 		t := time.Now()
 		c.Next()
 		latency := time.Since(t)
@@ -42,7 +19,6 @@ func Logger(c *gin.Context) {
 			"latency":      latencyMsec,
 			"httpMethod":   c.Request.Method,
 			"absolutePath": c.Request.URL.Path,
-			//"responseBody": blw.body.String(),
 		}).Infoln("http request")
 }
 
