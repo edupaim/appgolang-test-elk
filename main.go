@@ -65,7 +65,7 @@ func RunApplication() error {
 	router.GET("/bad-request", func(c *gin.Context) {
 		c.String(http.StatusBadRequest, "pong")
 	})
-	return router.Run(":8080")
+	return router.Run(":9331")
 }
 
 func main() {
